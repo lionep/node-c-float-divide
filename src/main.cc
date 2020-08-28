@@ -22,7 +22,7 @@ void Method(const FunctionCallbackInfo<Value>& args) {
     return;
   }
 
-  float num = args[0].As<v8::Number>()->Value();
+  double num = args[0].As<v8::Number>()->Value();
   float den = args[1].As<v8::Number>()->Value();
   float rate = num / den;
   char result[64];
