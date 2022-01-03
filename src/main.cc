@@ -1,25 +1,20 @@
-#include <node.h>
-#include <v8.h>
+#include <nan.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-static void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  v8::Isolate* isolate = args.GetIsolate();
-
-  if (args.Length() < 2) {
-    // Throw an Error that is passed back to JavaScript
-    isolate->ThrowException(v8::Exception::TypeError(
-        v8::String::NewFromUtf8(isolate, "Wrong number of arguments").ToLocalChecked()));
+NAN_METHOD(divide) {
+  if (!info[0]->IsNumber() || !info[1]->IsNumber()) {
+    Nan::ThrowError(Nan::Error("Wrong number of arguments"));
     return;
   }
 
-  double num = args[0].As<v8::Number>()->Value();
-  float den = args[1].As<v8::Number>()->Value();
+  double num = Nan::To<double>(info[0]).FromJust();
+  double denD = Nan::To<double>(info[1]).FromJust();
+  float den = (float) denD;
 
   if (den == 0) {
     // Throw an Error that is passed back to JavaScript
-    isolate->ThrowException(v8::Exception::Error(
-        v8::String::NewFromUtf8(isolate, "Could not divide by 0").ToLocalChecked()));
+    Nan::ThrowError(Nan::Error("Could not divide by 0"));
     return;
   }
 
@@ -27,29 +22,11 @@ static void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
   char result[64];
   sprintf(result, "%.15f", rate);
 
-  args.GetReturnValue().Set(v8::String::NewFromUtf8(
-        isolate, result).ToLocalChecked());
+  info.GetReturnValue().Set(Nan::New(result).ToLocalChecked());
 }
 
-extern "C" NODE_MODULE_EXPORT void
-NODE_MODULE_INITIALIZER(v8::Local<v8::Object> exports,
-                        v8::Local<v8::Value> module,
-                        v8::Local<v8::Context> context) {
-  NODE_SET_METHOD(exports, "divide", Method);
+NAN_MODULE_INIT(Init) {
+  NAN_EXPORT(target, divide);
 }
 
-void Initialize(v8::Local<v8::Object> exports,
-                v8::Local<v8::Value> module,
-                v8::Local<v8::Context> context) {
-  auto isolate = context->GetIsolate();
-  auto exception = v8::Exception::Error(v8::String::NewFromUtf8(isolate,
-      "Initialize should never run!").ToLocalChecked());
-  isolate->ThrowException(exception);
-}
-
-// Define a Node.js module, but with the wrong version. Node.js should still be
-// able to load this module, multiple times even, because it exposes the
-// specially named initializer above.
-#undef NODE_MODULE_VERSION
-#define NODE_MODULE_VERSION 3
-NODE_MODULE(NODE_GYP_MODULE_NAME, Initialize)
+NODE_MODULE(nan_hello_world, Init)

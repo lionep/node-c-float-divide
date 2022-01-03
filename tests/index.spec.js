@@ -31,6 +31,13 @@ it('should give round values without dot', async () => {
   expect(result).toEqual('60');
 });
 
+it('should throw when not using args', async () => {
+  expect(() => {
+    const result = divide();
+  })
+  .toThrow('Wrong number of arguments');
+});
+
 it('should give error when dividing by 0', async () => {
   expect(() => {
     const result = divide(25, 0);
