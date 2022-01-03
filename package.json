@@ -1,6 +1,6 @@
 {
   "name": "c-float-divide",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "main": "src/index.js",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@jest/globals": "^26.4.2",
-    "jest": "^26.4.2"
+    "@jest/globals": "^27.4.4",
+    "jest": "^27.4.5"
   }
 }

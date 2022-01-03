@@ -30,3 +30,10 @@ it('should give round values without dot', async () => {
   expect(typeof result).toBe('string');
   expect(result).toEqual('60');
 });
+
+it('should give error when dividing by 0', async () => {
+  expect(() => {
+    const result = divide(25, 0);
+  })
+  .toThrow('Could not divide by 0');
+});
